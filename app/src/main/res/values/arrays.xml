@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="noteName">
+        <item>Первая записка</item>
+        <item>Вторая записка</item>
+        <item>Список дел</item>
+    </string-array>
+    <string-array name="noteContent">
+        <item>Создал первую записку ей )</item>
+        <item>Ну а вот это вторая </item>
+        <item>1.Встать\n
+        2.Не захотеть снова лечь спать\n
+        3.Собака ждет тебя, урода, пока ты встанешь\n
+        4.Легкая прогулка\n
+        5.Завтрак для себя и семьи\n
+        6.Начало работы\n
+        7.Попытка успеть сдать дз\n
+        8.Надеюсь получится</item>
+    </string-array>
+    <string-array name="noteDate">
+        <item>08 апр</item>
+        <item>09 апр</item>
+        <item>09 апр</item>
+    </string-array>
+    <integer-array name="numbs">
+        <item>@drawable/first</item>
+        <item>@drawable/second</item>
+        <item>@drawable/third</item>
+    </integer-array>
+</resources>

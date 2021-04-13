@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">NotesWidget</string>
+    <string name="settings">Settings</string>
+    <string name="search">Search</string>
+    <string name="fragment_navigation">Navigation</string>
+    <string name="notes">Notes</string>
+    <string name="about_app">About app</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_about">В ближайшее время тут будет что-то крутое, а пока посмотрите на эту милаху)</string>
+    <string name="settings_text">Тут тоже будет что-нибудь )</string>
+</resources>
