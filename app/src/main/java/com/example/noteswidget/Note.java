@@ -1,7 +1,6 @@
 package com.example.noteswidget;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Note {
     private String currentNoteName;
@@ -14,30 +13,24 @@ public class Note {
 
 
     public String getCurrentNoteContent(int index) {
-        for (int i = 0; i < noteContents.size(); i++) {
-            if(i == index){
-                return noteContents.get(i);
-            }
+        if (index < 0 || index >= noteContents.size()) {
+            return null;
         }
-        return null;
+        return noteContents.get(index);
     }
 
     public String getCurrentNoteName(int index) {
-        for (int i = 0; i < noteNames.size(); i++) {
-            if(i == index){
-                return noteNames.get(i);
-            }
+        if (index < 0 || index >= noteNames.size()) {
+            return null;
         }
-        return null;
+        return noteNames.get(index);
     }
 
     public String getCurrentNoteData(int index) {
-        for (int i = 0; i < noteDates.size(); i++) {
-            if(i == index){
-                return noteDates.get(i);
-            }
+        if (index < 0 || index >= noteDates.size()) {
+            return null;
         }
-        return null;
+        return noteDates.get(index);
     }
 
 

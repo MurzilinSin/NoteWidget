@@ -2,16 +2,10 @@ package com.example.noteswidget;
 
 import android.content.res.TypedArray;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.TextView;
-
 import java.util.Arrays;
-
 
 public class ContentNoteFragment extends Fragment {
 
@@ -48,10 +42,9 @@ public class ContentNoteFragment extends Fragment {
         TextView tvName = view.findViewById(R.id.name_note);
         TextView tvDate = view.findViewById(R.id.data_note);
         TextView tvContent = view.findViewById(R.id.content_note);
-        TypedArray names = getResources().obtainTypedArray(R.array.noteName);
+        /*TypedArray names = getResources().obtainTypedArray(R.array.noteName);
         TypedArray dates = getResources().obtainTypedArray(R.array.noteDate);
-        TypedArray contents = getResources().obtainTypedArray(R.array.noteContent);
-
+        TypedArray contents = getResources().obtainTypedArray(R.array.noteContent);*/
         //AppCompatImageView imageView = view.findViewById(R.id.content_note);
         //TypedArray images = getResources().obtainTypedArray(R.array.numbs);
         // imageView.setImageResource(images.getResourceId(index,-1));
