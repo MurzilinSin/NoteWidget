@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import com.example.noteswidget.fragments.ContentNoteFragment;
+
 public class ContentNoteActivity extends AppCompatActivity {
 
     @Override
