@@ -22,17 +22,21 @@ import com.example.noteswidget.fragments.AboutAppFragment;
 import com.example.noteswidget.fragments.ContentNoteFragment;
 import com.example.noteswidget.fragments.NotesFragment;
 import com.example.noteswidget.fragments.SettingsFragment;
+import com.example.noteswidget.observe.Publisher;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
-
+    private Navigation navigation;
+    private Publisher publisher = new Publisher();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        navigation = new Navigation(getSupportFragmentManager());
         initViews();
         startFirstFragment();
+        getNavigation().addFragment(new NotesFragment(),false);
     }
 
     private void initViews() {
@@ -40,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
         initDrawer(toolbar);
     }
 
-
-
     private Toolbar initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         return toolbar;
     }
 
@@ -57,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 addFragment(new AboutAppFragment());
                 return true;
             case R.id.action_notes:
-                addFragment(new ContentNoteFragment());
+                addFragment(new NotesFragment());
                 return true;
         }
         return false;
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private void startFirstFragment() {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.notes, new ContentNoteFragment());
+        transaction.add(R.id.notes, new NotesFragment());
         transaction.commit();
     }
 
@@ -74,7 +78,20 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.notes, fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+    public Navigation getNavigation() {
+        return navigation;
+    }
+    public Publisher getPublisher() {
+        return publisher;
     }
 
 

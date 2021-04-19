@@ -1,3 +1,4 @@
+/*
 package com.example.noteswidget;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,4 +28,4 @@ public class ContentNoteActivity extends AppCompatActivity {
                     .commit();
         }
     }
-}
+}*/

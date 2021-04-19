@@ -7,20 +7,25 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.noteswidget.model.Note;
+import com.example.noteswidget.model.NoteSourceImpl;
 
 import java.util.List;
 
 public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdapter.ViewHolder> {
 
-    private List<Note> dataSource;
+    private NoteSourceImpl noteSource;
     private Context context;
     private OnItemClickListener listener;
+    private final Fragment fragment;
+    private int menuPosition;
 
-    public SocialNetworkAdapter(List<Note> dataSource) {
-        this.dataSource = dataSource;
+    public SocialNetworkAdapter(NoteSourceImpl noteSource, Fragment fragment) {
+        this.noteSource = noteSource;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -34,18 +39,21 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Note noteData = dataSource.get(position);
-
+        Note noteData = noteSource.getNote(position);
         holder.title.setText(noteData.getTitle());
         holder.content.setText(noteData.getContent());
         holder.date.setText(noteData.getDate());
     }
 
     public int getItemCount() {
-        return dataSource == null ? 0 : dataSource.size();
+        return noteSource == null ? 0 : noteSource.size();
     }
 
-    public void SetOnItemClickListener(OnItemClickListener itemClickListener){
+    public int getMenuPosition(){
+        return menuPosition;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener itemClickListener){
         this.listener = itemClickListener;
     }
 
@@ -61,14 +69,27 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
             title = itemView.findViewById(R.id.title);
             date = itemView.findViewById(R.id.date);
             content = itemView.findViewById(R.id.content);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(listener != null){
-                        listener.onItemClick(v,getAdapterPosition());
-                    }
+            registerContextMenu(itemView);
+            itemView.setOnClickListener(v -> {
+                if(listener != null){
+                    listener.onItemClick(v, getAdapterPosition());
                 }
             });
         }
+        private void registerContextMenu(View itemView) {
+            if(fragment!= null){
+                itemView.setOnLongClickListener(v -> {
+
+                    menuPosition = getLayoutPosition();
+                    System.out.println(noteSource.getNote(menuPosition));
+                    return false;
+                });
+            }
+            fragment.registerForContextMenu(itemView);
+        }
     }
+
+
+
+
 }
