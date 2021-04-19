@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">NotesWidget</string>
+    <string name="settings">Settings</string>
+    <string name="search">Search</string>
+    <string name="fragment_navigation">Navigation</string>
+    <string name="notes">Notes</string>
+    <string name="about_app">About app</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_about">В ближайшее время тут будет что-то крутое, а пока посмотрите на эту милаху)</string>
+    <string name="settings_text">Тут тоже будет что-нибудь )</string>
+    <string name="note_content_0"></string>
+    <string name="note_content_1">  Когда скромняга бард отдыхал от дел\n
+                                    С Геральтом из Ривии он песню эту пел.\n\n
+
+                                    Сразился Белый Волк с велиречивым чертом\n
+                                    Эльфов покромсал несчетные когорты.\n\n
+
+                                    Сзади подползли, хоть это стыд и срам\n
+                                    Сломали мне лютню дали по зубам.\n\n
+
+                                    Целился тот черт мне рогом прямо в глаз\n
+                                    И тут Ведьмак крикнул «Вот твой смертный час!»\n\n
+
+                                    Ведьмаку заплатите чеканной монетой, чеканной монетой,\n
+                                    Ведьмаку заплатите — зачтется все это вам!\n\n
+
+                                    Он хоть на край земли отправиться готов\n
+                                    Сразить всех чудовищ убить всех врагов\n\n
+
+                                    Он эльфов всех прогнал за дальний перевал\n
+                                    Высокие горы на вечный привал\n\n
+
+                                    Он бьет не в бровь, а в глаз, был ранен много раз\n
+                                    Он людям товарищ всегда он за нас\n\n
+
+                                    К чему эта вражда никак я не пойму\n
+                                    Он нас защищает — так налейте ж ему!\n\n
+
+                                    Ведьмаку заплатите чеканной монетой, чеканной монетой,\n
+                                    Ведьмаку заплатите — зачтется все это вам!
+    </string>
+    <string name="remove">Clear list</string>
+    <string name="add">Add</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+</resources>
