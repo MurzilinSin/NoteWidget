@@ -2,18 +2,10 @@ package com.example.noteswidget.fragments;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.*;
 import android.widget.TextView;
-
 import com.example.noteswidget.model.Note;
-import com.example.noteswidget.model.NoteSourceImpl;
 import com.example.noteswidget.R;
-import com.example.noteswidget.SocialNetworkAdapter;
 
 public class ContentNoteFragment extends Fragment {
 
@@ -56,18 +48,4 @@ public class ContentNoteFragment extends Fragment {
         noteContent.setText(note.getContent());
         noteDate.setText(note.getDate());
     }
-/*
-    private void initRecyclerView(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_lines);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        adapter = new SocialNetworkAdapter(new NoteSourceImpl(getResources()).getData());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(manager);
-        adapter.SetOnItemClickListener((view0, position) -> {
-            FragmentManager fragmentManager = getChildFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.note, new NotesFragment());
-            transaction.commit();
-        });
-    }*/
 }

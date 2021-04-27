@@ -1,9 +1,7 @@
 package com.example.noteswidget.model;
 
 import android.content.res.Resources;
-
 import com.example.noteswidget.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +14,15 @@ public class NoteSourceImpl implements NoteSource {
         this.resources = resources;
     }
 
-    public NoteSourceImpl init() {
+    public NoteSourceImpl init(NoteSourceResponse noteSourceResponse) {
         String[] titles = resources.getStringArray(R.array.noteName);
         String[] dates = resources.getStringArray(R.array.noteDate);
         String[] contents = resources.getStringArray(R.array.noteContent);
         for (int i = 0; i < contents.length; i++) {
             noteSource.add(new Note(titles[i],dates[i],contents[i]));
+        }
+        if(noteSourceResponse != null){
+            noteSourceResponse.initialized(this);
         }
         return this;
     }

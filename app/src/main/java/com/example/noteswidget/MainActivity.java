@@ -35,13 +35,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         navigation = new Navigation(getSupportFragmentManager());
         initViews();
-        startFirstFragment();
         getNavigation().addFragment(new NotesFragment(),false);
     }
 
     private void initViews() {
         Toolbar toolbar = initToolbar();
-        initDrawer(toolbar);
+        navigation.initDrawer(toolbar,this);
     }
 
     private Toolbar initToolbar() {
@@ -52,36 +51,6 @@ public class MainActivity extends AppCompatActivity {
         return toolbar;
     }
 
-    private boolean navigateFragment(int id) {
-        switch (id){
-            case R.id.action_settings:
-                addFragment(new SettingsFragment());
-                return true;
-            case R.id.action_about:
-                addFragment(new AboutAppFragment());
-                return true;
-            case R.id.action_notes:
-                addFragment(new NotesFragment());
-                return true;
-        }
-        return false;
-    }
-
-    private void startFirstFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.notes, new NotesFragment());
-        transaction.commit();
-    }
-
-    private void addFragment(Fragment fragment) {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.notes, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -90,26 +59,11 @@ public class MainActivity extends AppCompatActivity {
     public Navigation getNavigation() {
         return navigation;
     }
+
     public Publisher getPublisher() {
         return publisher;
     }
 
-
-    private void initDrawer(Toolbar toolbar) {
-        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if(navigateFragment(id)){
-                drawer.closeDrawer(GravityCompat.START);
-                return true;
-            }
-            return false;
-        });
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu,menu);

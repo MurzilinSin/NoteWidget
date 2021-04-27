@@ -1,25 +1,17 @@
 package com.example.noteswidget.fragments;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.annotation.*;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.*;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.recyclerview.widget.*;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.*;
+import android.view.*;
+import android.widget.AdapterView;
+
 
 //import com.example.noteswidget.ContentNoteActivity;
 import com.example.noteswidget.MainActivity;
@@ -28,7 +20,10 @@ import com.example.noteswidget.R;
 import com.example.noteswidget.SocialNetworkAdapter;
 import com.example.noteswidget.fragments.ContentNoteFragment;
 import com.example.noteswidget.model.Note;
+import com.example.noteswidget.model.NoteSource;
+import com.example.noteswidget.model.NoteSourceFirebase;
 import com.example.noteswidget.model.NoteSourceImpl;
+import com.example.noteswidget.model.NoteSourceResponse;
 import com.example.noteswidget.observe.Observer;
 import com.example.noteswidget.observe.Publisher;
 
@@ -36,48 +31,45 @@ import java.util.List;
 
 public class NotesFragment extends Fragment {
     private boolean isLandscape;
-    private NoteSourceImpl note;
+    private NoteSource note;
     private SocialNetworkAdapter adapter;
     private RecyclerView recyclerView;
     private static final int MY_DEFAULT_DURATION = 1000;
     private Navigation navigation;
     private Publisher publisher;
-    private boolean moveToLastPosition;
+    private boolean moveToFirstPosition;
     private Note newNote = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-      //  return inflater.inflate(R.layout.fragment_content_note, container, false);
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
         initView(view);
         setHasOptionsMenu(true);
+        note = new NoteSourceFirebase().init(noteSource -> adapter.notifyDataSetChanged());
+        adapter.setNoteSource(note);
         return view;
     }
 
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recycler_view_lines);
-        note = new NoteSourceImpl(getResources()).init();
-        initRecyclerView(view, note);
+        initRecyclerView(view);
     }
 
-    private void initRecyclerView(View view, NoteSourceImpl note) {
+    private void initRecyclerView(View view) {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        adapter = new SocialNetworkAdapter(note, this);
+        adapter = new SocialNetworkAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(manager);
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(MY_DEFAULT_DURATION);
         animator.setRemoveDuration(MY_DEFAULT_DURATION);
         recyclerView.setItemAnimator(animator);
-        if (moveToLastPosition){
-            recyclerView.smoothScrollToPosition(note.size() - 1);
-            moveToLastPosition = false;
+        if (moveToFirstPosition && note.size() > 0){
+            recyclerView.scrollToPosition(0);
+            moveToFirstPosition = false;
         }
         adapter.setOnItemClickListener((view0, position) -> {
             FragmentManager fragmentManager = getFragmentManager();
-            // до этого ставила getChildFragmentManager() и вылетало с IllegalArgumentException: No view found for id.
-            // и везде пишут, что его надо использовать его, но стоило поставить обынчный менеджер и все работает.
-            // ведь при открытия фрагмента во фрагменте я же должен использовать childManager. так почему он не сработал должен образом ?
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.notes, ContentNoteFragment.newInstance(note.getNote(position)));
             transaction.addToBackStack(null);
@@ -91,29 +83,6 @@ public class NotesFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_add:
-                note.addNote(new Note("Заголовок " + note.size(), "Описание" + note.size(), "Дата " + note.size()));
-                navigation.addFragment(NoteAddFragment.newInstance(),true);
-                publisher.subscribe(new Observer() {
-                    @Override
-                    public void updateNote(Note anotherNote) {
-                        note.addNote(anotherNote);
-                        adapter.notifyItemInserted(note.size()-1);
-                        moveToLastPosition = true;
-                    }
-                });
-                return true;
-            case R.id.action_clear:
-                note.clearNotes();
-                adapter.notifyDataSetChanged();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = requireActivity().getMenuInflater();
@@ -121,25 +90,52 @@ public class NotesFragment extends Fragment {
     }
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return onItemSelected(item.getItemId()) || super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        int position = adapter.getMenuPosition();
-        switch(item.getItemId()) {
+        return onItemSelected(item.getItemId()) || super.onContextItemSelected(item);
+    }
+
+    private boolean onItemSelected(int itemId) {
+        switch (itemId){
+            case R.id.action_add:
+               navigation.addFragment(NoteAddFragment.newInstance(),true);
+               publisher.subscribe(soNewNote -> {
+                   note.addNote(soNewNote);
+                   adapter.notifyItemInserted(note.size()-1);
+                   moveToFirstPosition = true;
+               });
+               return true;
             case R.id.action_update:
-                navigation.addFragment(NoteAddFragment.newInstance(note.getNote(position)),true);
-                publisher.subscribe(new Observer() {
-                    @Override
-                    public void updateNote(Note updatedNote) {
-                        note.updateNote(position,updatedNote);
-                        adapter.notifyItemChanged(position);
-                    }
+                final int updatedPosition = adapter.getMenuPosition();
+                navigation.addFragment(NoteAddFragment.newInstance(note.getNote(updatedPosition)),true);
+                publisher.subscribe(updatedNote -> {
+                    note.updateNote(updatedPosition,updatedNote);
+                    adapter.notifyItemChanged(updatedPosition);
                 });
                 return true;
             case R.id.action_delete:
-                note.deleteNote(position);
-                adapter.notifyItemRemoved(position);
+                int deletePosition = adapter.getMenuPosition();
+                new AlertDialog.Builder(getActivity()).setTitle("Delete for real ?")
+                        .setMessage("Do you want to delete this blank?")
+                        .setNegativeButton("No", null)
+                        .setNeutralButton("Yes", (dialogInterface, i) -> {
+                            note.deleteNote(deletePosition);
+                            adapter.notifyItemRemoved(deletePosition);
+                        })
+                        .create()
+                        .show();
+
+                return true;
+            case R.id.action_clear:
+                note.clearNotes();
+                adapter.notifyDataSetChanged();
                 return true;
         }
-        return super.onContextItemSelected(item);
+        return false;
     }
 
     @Override
@@ -173,50 +169,4 @@ public class NotesFragment extends Fragment {
             newNote = null;
         }
     }
-
-    /*   @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initView();
-    }
-
-    private void initView() {
-        List<Note> dataSource = new NoteSourceImpl(getResources()).getData();
-        System.out.println(dataSource.get(0).getTitle());
-    }*/
-
-/*  @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        if(isLandscape){
-            //showLandNote(0);
-        }
-    }
-
-    private void showNote(int index){
-        if(isLandscape) {
-            //showLandNote(index);
-        }
-        else{
-            showPortNote(index);
-        }
-    }*/
-
-/*    private void showLandNote(int index){
-        ContentNoteFragment details = ContentNoteFragment.newInstance(index);
-        FragmentManager manager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.note,details);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.commit();
-    }*/
-
-/*
-    private void showPortNote(int index) {
-        Intent intent = new Intent();
-       // intent.setClass(getActivity(), ContentNoteActivity.class);
-        intent.putExtra(ContentNoteFragment.ARG_INDEX,index);
-        startActivity(intent);
-    }*/
 }

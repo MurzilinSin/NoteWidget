@@ -2,15 +2,10 @@ package com.example.noteswidget.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.view.*;
+import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
-
-import com.example.noteswidget.MainActivity;
+import com.example.noteswidget.*;
 import com.example.noteswidget.R;
 import com.example.noteswidget.model.Note;
 import com.example.noteswidget.observe.Publisher;
@@ -93,10 +88,13 @@ public class NoteAddFragment extends Fragment {
     private Note collectNote() {
         String title = this.title.getText().toString();
         String description = this.description.getText().toString();
-        /*if(note != null){
-
-        }*/
-        return new Note(title, "12",description);
+        if(note != null){
+            Note answer;
+            answer = new Note(title,"24.04",description);
+            answer.setId(note.getId());
+            return answer;
+        }
+        return new Note(title, "23.04",description);
     }
 
 

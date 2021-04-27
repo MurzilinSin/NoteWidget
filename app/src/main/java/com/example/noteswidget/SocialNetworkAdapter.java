@@ -11,21 +11,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.noteswidget.model.Note;
+import com.example.noteswidget.model.NoteSource;
 import com.example.noteswidget.model.NoteSourceImpl;
 
 import java.util.List;
 
 public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdapter.ViewHolder> {
 
-    private NoteSourceImpl noteSource;
+    private NoteSource noteSource;
     private Context context;
     private OnItemClickListener listener;
     private final Fragment fragment;
     private int menuPosition;
 
-    public SocialNetworkAdapter(NoteSourceImpl noteSource, Fragment fragment) {
-        this.noteSource = noteSource;
+    public SocialNetworkAdapter(Fragment fragment) {
         this.fragment = fragment;
+    }
+
+    public void setNoteSource(NoteSource noteSource){
+        this.noteSource = noteSource;
+        notifyDataSetChanged();
     }
 
     @NonNull
